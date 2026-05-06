@@ -17,9 +17,11 @@ app.post("/convert-docx", upload.single("file"), async (req, res) => {
 
     libre.convert(docxBuf, ".pdf", undefined, (err, done) => {
       if (err) {
-        console.error(err);
-        return res.status(500).send("Conversion failed");
-      }
+    console.error("❌ LibreOffice Error:", err);
+
+    // 👇 SEND REAL ERROR BACK
+    return res.status(500).send(err.message || "Conversion failed");
+  }
 
       res.setHeader("Content-Type", "application/pdf");
       res.send(done);
