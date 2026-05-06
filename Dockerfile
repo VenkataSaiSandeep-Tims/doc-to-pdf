@@ -11,6 +11,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5000
+# 👇 optional (not critical, but cleaner)
+EXPOSE 10000
 
 CMD ["node", "server.js"]
