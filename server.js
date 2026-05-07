@@ -11,30 +11,26 @@ const upload = multer({ dest: "uploads/" });
 
 app.post("/convert-to-pdf", upload.single("file"), async (req, res) => {
   try {
+
     const filePath = req.file.path;
 
-    const docxBuf = fs.readFileSync(filePath);
+    const inputBuffer = fs.readFileSync(filePath);
 
-    libre.convert(docxBuf, ".pdf", undefined, (err, done) => {
+    libre.convert(inputBuffer, ".pdf", undefined, (err, done) => {
+
       if (err) {
-    console.error(" LibreOffice Error:", err);
-
-    // 👇 SEND REAL ERROR BACK
-    return res.status(5000).send(err.message || "Conversion failed");
-  }
+        console.error("❌ LibreOffice Error:", err);
+        return res.status(500).send(err.message || "Conversion failed");
+      }
 
       res.setHeader("Content-Type", "application/pdf");
       res.send(done);
+
+      fs.unlinkSync(filePath);
     });
 
   } catch (err) {
     console.error(err);
     res.status(500).send("Error");
   }
-});
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
