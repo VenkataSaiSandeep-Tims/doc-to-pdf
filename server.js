@@ -9,7 +9,7 @@ app.use(cors());
 
 const upload = multer({ dest: "uploads/" });
 
-app.post("/convert-docx", upload.single("file"), async (req, res) => {
+app.post("/convert-to-pdf", upload.single("file"), async (req, res) => {
   try {
     const filePath = req.file.path;
 
@@ -17,10 +17,10 @@ app.post("/convert-docx", upload.single("file"), async (req, res) => {
 
     libre.convert(docxBuf, ".pdf", undefined, (err, done) => {
       if (err) {
-    console.error("❌ LibreOffice Error:", err);
+    console.error(" LibreOffice Error:", err);
 
     // 👇 SEND REAL ERROR BACK
-    return res.status(500).send(err.message || "Conversion failed");
+    return res.status(5000).send(err.message || "Conversion failed");
   }
 
       res.setHeader("Content-Type", "application/pdf");
