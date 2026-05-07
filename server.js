@@ -5,12 +5,21 @@ import libre from "libreoffice-convert";
 import cors from "cors";
 
 const app = express();
+
 app.use(cors());
 
 const upload = multer({ dest: "uploads/" });
 
+app.get("/", (req, res) => {
+  res.send("Backend running");
+});
+
 app.post("/convert-to-pdf", upload.single("file"), async (req, res) => {
   try {
+
+    if (!req.file) {
+      return res.status(400).send("No file uploaded");
+    }
 
     const filePath = req.file.path;
 
@@ -26,11 +35,18 @@ app.post("/convert-to-pdf", upload.single("file"), async (req, res) => {
       res.setHeader("Content-Type", "application/pdf");
       res.send(done);
 
+      // cleanup
       fs.unlinkSync(filePath);
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error");
+    console.error("❌ Server Error:", err);
+    res.status(500).send("Internal Server Error");
   }
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
