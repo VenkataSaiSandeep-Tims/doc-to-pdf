@@ -6,7 +6,13 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://your-frontend-domain.vercel.app"
+  ],
+  methods: ["GET", "POST"],
+}));
 
 const upload = multer({ dest: "uploads/" });
 
